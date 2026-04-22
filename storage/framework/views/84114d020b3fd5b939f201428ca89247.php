@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin - Fashion AI')</title>
+    <title><?php echo $__env->yieldContent('title', 'Admin - Fashion AI'); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -122,41 +122,41 @@
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
 
-    {{-- Sidebar --}}
+    
     <div class="sidebar">
         <div class="sidebar-brand" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
             <i class="fa-solid fa-store"></i> Fashion AI
         </div>
         <div class="sidebar-menu">
             <div class="menu-title">Tổng quan</div>
-            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <a href="<?php echo e(route('admin.dashboard')); ?>" class="<?php echo e(request()->routeIs('admin.dashboard') ? 'active' : ''); ?>">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
 
             <div class="menu-title">Quản lý</div>
-            <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('admin.products.index')); ?>" class="<?php echo e(request()->routeIs('admin.products.*') ? 'active' : ''); ?>">
                 <i class="fa-solid fa-shirt"></i> Sản phẩm
             </a>
-            <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('admin.categories.index')); ?>" class="<?php echo e(request()->routeIs('admin.categories.*') ? 'active' : ''); ?>">
                 <i class="fa-solid fa-tags"></i> Danh mục
             </a>
-            <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('admin.orders.index')); ?>" class="<?php echo e(request()->routeIs('admin.orders.*') ? 'active' : ''); ?>">
                 <i class="fa-solid fa-bag-shopping"></i> Đơn hàng
             </a>
-            <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('admin.users.index')); ?>" class="<?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>">
                 <i class="fa-solid fa-users"></i> Người dùng
             </a>
 
             <div class="menu-title">Tài khoản</div>
-            <a href="{{ route('home') }}" target="_blank">
+            <a href="<?php echo e(route('home')); ?>" target="_blank">
                 <i class="fa-solid fa-globe"></i> Xem website
             </a>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('logout')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <button type="submit" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:12px 20px; color:#ccc; font-size:14px;">
                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                 </button>
@@ -164,32 +164,34 @@
         </div>
     </div>
 
-    {{-- Main Content --}}
+    
     <div class="main-content">
         <div class="topbar">
-            <h4>@yield('page-title', 'Dashboard')</h4>
+            <h4><?php echo $__env->yieldContent('page-title', 'Dashboard'); ?></h4>
             <div class="admin-info">
                 <i class="fa-regular fa-user"></i>
-                <span>{{ Auth::user()->name }}</span>
+                <span><?php echo e(Auth::user()->name); ?></span>
             </div>
         </div>
 
         <div class="content">
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div style="background: #d4edda; color: #155724; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px;">
-                    <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div style="background: #f8d7da; color: #721c24; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px;">
-                    <i class="fa-solid fa-circle-xmark"></i> {{ session('error') }}
-                </div>
-            @endif
+                    <i class="fa-solid fa-circle-check"></i> <?php echo e(session('success')); ?>
 
-            @yield('content')
+                </div>
+            <?php endif; ?>
+            <?php if(session('error')): ?>
+                <div style="background: #f8d7da; color: #721c24; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px;">
+                    <i class="fa-solid fa-circle-xmark"></i> <?php echo e(session('error')); ?>
+
+                </div>
+            <?php endif; ?>
+
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
     </div>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/admin/layouts/app.blade.php ENDPATH**/ ?>

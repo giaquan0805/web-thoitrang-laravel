@@ -56,6 +56,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Variants
     Route::post('/products/{id}/variants', [AdminProductController::class, 'storeVariant'])->name('variants.store');
     Route::delete('/variants/{id}', [AdminProductController::class, 'destroyVariant'])->name('variants.destroy');
+    Route::delete('/product-images/{id}', [AdminProductController::class, 'destroyImage'])->name('product-images.destroy');
 
     // Orders
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');

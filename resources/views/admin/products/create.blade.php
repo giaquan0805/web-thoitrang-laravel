@@ -7,8 +7,10 @@
 
 <div class="card">
     <div class="card-header">
-        <h5>➕ Thêm sản phẩm mới</h5>
-        <a href="{{ route('admin.products.index') }}" class="btn btn-sm" style="background: #eee; color: #333;">← Quay lại</a>
+        <h5><i class="fa-solid fa-plus" style="color: #28a745;"></i> Thêm sản phẩm mới</h5>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-sm" style="background: #eee; color: #333;">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại
+        </a>
     </div>
     <div class="card-body">
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
@@ -44,22 +46,23 @@
                     <label>Tag</label>
                     <select name="tag" class="form-control">
                         <option value="Mới" {{ old('tag') == 'Mới' ? 'selected' : '' }}>Mới</option>
+                        <option value="Nổi bật" {{ old('tag') == 'Nổi bật' ? 'selected' : '' }}>Nổi bật</option>
                         <option value="Bán chạy" {{ old('tag') == 'Bán chạy' ? 'selected' : '' }}>Bán chạy</option>
                         <option value="Sale" {{ old('tag') == 'Sale' ? 'selected' : '' }}>Sale</option>
                     </select>
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Ảnh thumbnail</label>
+                    <label><i class="fa-regular fa-image" style="color: #1976d2;"></i> Ảnh thumbnail (ảnh chính)</label>
                     <input type="file" name="thumbnail" class="form-control" accept="image/*">
                     @error('thumbnail')<span style="color:red;font-size:12px;">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>URL ảnh AI (ai_clean_image_url)</label>
-                    <input type="text" name="ai_clean_image_url" class="form-control"
-                        value="{{ old('ai_clean_image_url') }}"
-                        placeholder="vd: images/products/sp-1/main.jpg">
+                    <label><i class="fa-solid fa-images" style="color: #7b1fa2;"></i> Ảnh chi tiết (chọn nhiều ảnh)</label>
+                    <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
+                    @error('images.*')<span style="color:red;font-size:12px;">{{ $message }}</span>@enderror
+                    <p style="font-size: 12px; color: #999; margin-top: 5px;">Có thể chọn nhiều ảnh cùng lúc (giữ Ctrl + click). Ảnh sẽ hiển thị trong trang chi tiết sản phẩm.</p>
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
@@ -69,7 +72,9 @@
             </div>
 
             <div style="margin-top: 10px;">
-                <button type="submit" class="btn btn-primary">💾 Lưu sản phẩm</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-solid fa-floppy-disk"></i> Lưu sản phẩm
+                </button>
                 <a href="{{ route('admin.products.index') }}" class="btn" style="background: #eee; color: #333; margin-left: 10px;">Hủy</a>
             </div>
         </form>

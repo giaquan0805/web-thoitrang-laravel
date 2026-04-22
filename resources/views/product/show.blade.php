@@ -10,15 +10,24 @@
     <div class="product-images">
         <div class="main-image">
             <img id="main-img"
-                 src="{{ product_image($product->images->first()->image_url ?? $product->thumbnail_url) }}"
+                 src="{{ product_image($product->thumbnail_url) }}"
                  alt="{{ $product->name }}">
         </div>
 
         <div class="thumbnail-list">
+            {{-- Ảnh thumbnail luôn hiện đầu tiên --}}
+            @if($product->thumbnail_url)
+                <img src="{{ product_image($product->thumbnail_url) }}"
+                     alt="{{ $product->name }}"
+                     class="thumb-active"
+                     onclick="changeMainImage(this, '{{ product_image($product->thumbnail_url) }}')">
+            @endif
+
+            {{-- Ảnh chi tiết --}}
             @foreach($product->images as $img)
                 <img src="{{ product_image($img->image_url) }}"
                      alt="{{ $product->name }}"
-                     onclick="document.getElementById('main-img').src='{{ product_image($img->image_url) }}'">
+                     onclick="changeMainImage(this, '{{ product_image($img->image_url) }}')">
             @endforeach
         </div>
     </div>
@@ -65,13 +74,13 @@
 
         {{-- Nút hành động --}}
         <div class="product-actions">
-            <button class="btn-ai-tryon">✨ Thử đồ AI</button>
+            <button class="btn-ai-tryon"><i class="fa-solid fa-wand-magic-sparkles"></i> Thử đồ AI</button>
             <form action="{{ route('cart.add') }}" method="POST">
                 @csrf
                 <input type="hidden" name="product_variant_id" id="selected_variant"
                        value="{{ $product->variants->first()->id ?? '' }}">
                 <input type="hidden" name="quantity" id="selected_qty" value="1">
-                <button type="submit" class="btn-add-cart">🛒 Thêm vào giỏ</button>
+                <button type="submit" class="btn-add-cart"><i class="fa-solid fa-bag-shopping"></i> Thêm vào giỏ</button>
             </form>
         </div>
 
@@ -97,5 +106,30 @@ function changeQty(delta) {
     document.getElementById('qty').innerText = qty;
     document.getElementById('selected_qty').value = qty;
 }
+
+function changeMainImage(thumb, imageUrl) {
+    document.getElementById('main-img').src = imageUrl;
+    // Highlight ảnh đang chọn
+    document.querySelectorAll('.thumbnail-list img').forEach(img => img.classList.remove('thumb-active'));
+    thumb.classList.add('thumb-active');
+}
 </script>
+@endpush
+
+@push('styles')
+<style>
+.thumbnail-list img {
+    border: 2px solid transparent;
+    opacity: 0.6;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.thumbnail-list img:hover {
+    opacity: 1;
+}
+.thumbnail-list img.thumb-active {
+    border-color: #d4a574;
+    opacity: 1;
+}
+</style>
 @endpush

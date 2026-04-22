@@ -14,11 +14,41 @@ class OrderController extends Controller
         if (Auth::user()->role !== 1) abort(403);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $this->checkAdmin();
-        $orders = Order::with('user')->orderBy('order_date', 'desc')->get();
-        return view('admin.orders.index', compact('orders'));
+
+        $query = Order::with('user');
+
+        // Lọc theo trạng thái
+        if ($request->filled('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        // Tìm kiếm theo tên hoặc SĐT
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('shipping_name', 'like', '%' . $keyword . '%')
+                  ->orWhere('shipping_phone', 'like', '%' . $keyword . '%')
+                  ->orWhereHas('user', function ($q2) use ($keyword) {
+                      $q2->where('name', 'like', '%' . $keyword . '%');
+                  });
+            });
+        }
+
+        $orders = $query->orderBy('order_date', 'desc')->paginate(10)->appends($request->query());
+
+        // Đếm số đơn theo trạng thái
+        $statusCounts = [
+            'all'       => Order::count(),
+            'pending'   => Order::where('status', 0)->count(),
+            'shipping'  => Order::where('status', 1)->count(),
+            'completed' => Order::where('status', 2)->count(),
+            'cancelled' => Order::where('status', 3)->count(),
+        ];
+
+        return view('admin.orders.index', compact('orders', 'statusCounts'));
     }
 
     public function show($id)

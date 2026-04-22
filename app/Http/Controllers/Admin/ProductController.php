@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -15,11 +17,36 @@ class ProductController extends Controller
         if (Auth::user()->role !== 1) abort(403);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $this->checkAdmin();
-        $products = Product::with('category')->orderBy('id', 'desc')->get();
-        return view('admin.products.index', compact('products'));
+
+        $query = Product::with(['category', 'variants']);
+
+        if ($request->filled('keyword')) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->filled('tag')) {
+            $query->where('tag', $request->tag);
+        }
+
+        $sortBy = $request->get('sort', 'id');
+        $sortDir = $request->get('dir', 'desc');
+        $allowedSorts = ['id', 'name', 'price'];
+        if (in_array($sortBy, $allowedSorts)) {
+            $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc');
+        }
+
+        $products = $query->paginate(10)->appends($request->query());
+        $categories = Category::all();
+        $tags = Product::select('tag')->distinct()->whereNotNull('tag')->pluck('tag');
+
+        return view('admin.products.index', compact('products', 'categories', 'tags'));
     }
 
     public function create()
@@ -36,7 +63,8 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'name'        => 'required|string|max:255',
             'price'       => 'required|numeric|min:0',
-            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png,webp,avif|max:2048',
+            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png,webp,avif|max:2048',
             'tag'         => 'nullable|string|max:50',
             'description' => 'nullable|string',
         ]);
@@ -46,15 +74,25 @@ class ProductController extends Controller
             $thumbnail_url = $request->file('thumbnail')->store('products', 'public');
         }
 
-        Product::create([
-            'category_id'        => $request->category_id,
-            'name'               => $request->name,
-            'price'              => $request->price,
-            'tag'                => $request->tag,
-            'description'        => $request->description,
-            'thumbnail_url'      => $thumbnail_url,
-            'ai_clean_image_url' => $request->ai_clean_image_url,
+        $product = Product::create([
+            'category_id'   => $request->category_id,
+            'name'          => $request->name,
+            'price'         => $request->price,
+            'tag'           => $request->tag,
+            'description'   => $request->description,
+            'thumbnail_url' => $thumbnail_url,
         ]);
+
+        // Upload ảnh chi tiết
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products/details', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_url'  => $path,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
@@ -62,7 +100,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $this->checkAdmin();
-        $product    = Product::with('variants')->findOrFail($id);
+        $product    = Product::with(['variants', 'images'])->findOrFail($id);
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
@@ -74,7 +112,8 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'name'        => 'required|string|max:255',
             'price'       => 'required|numeric|min:0',
-            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png,webp,avif|max:2048',
+            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png,webp,avif|max:2048',
             'tag'         => 'nullable|string|max:50',
             'description' => 'nullable|string',
         ]);
@@ -87,23 +126,55 @@ class ProductController extends Controller
         }
 
         $product->update([
-            'category_id'        => $request->category_id,
-            'name'               => $request->name,
-            'price'              => $request->price,
-            'tag'                => $request->tag,
-            'description'        => $request->description,
-            'thumbnail_url'      => $thumbnail_url,
-            'ai_clean_image_url' => $request->ai_clean_image_url,
+            'category_id'   => $request->category_id,
+            'name'          => $request->name,
+            'price'         => $request->price,
+            'tag'           => $request->tag,
+            'description'   => $request->description,
+            'thumbnail_url' => $thumbnail_url,
         ]);
 
-        return redirect()->route('admin.products.index')->with('success', 'Cập nhật sản phẩm thành công!');
+        // Upload thêm ảnh chi tiết mới
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products/details', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_url'  => $path,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.edit', $id)->with('success', 'Cập nhật sản phẩm thành công!');
     }
 
     public function destroy($id)
     {
         $this->checkAdmin();
-        Product::findOrFail($id)->delete();
+        $product = Product::with('images')->findOrFail($id);
+
+        foreach ($product->images as $img) {
+            if (Storage::disk('public')->exists($img->image_url)) {
+                Storage::disk('public')->delete($img->image_url);
+            }
+        }
+
+        $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Xóa sản phẩm thành công!');
+    }
+
+    public function destroyImage($id)
+    {
+        $this->checkAdmin();
+        $image = ProductImage::findOrFail($id);
+        $productId = $image->product_id;
+
+        if (Storage::disk('public')->exists($image->image_url)) {
+            Storage::disk('public')->delete($image->image_url);
+        }
+
+        $image->delete();
+        return redirect()->route('admin.products.edit', $productId)->with('success', 'Xóa ảnh thành công!');
     }
 
     public function storeVariant(Request $request, $id)

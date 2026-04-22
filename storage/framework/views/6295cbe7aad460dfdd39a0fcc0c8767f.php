@@ -1,17 +1,17 @@
-@extends('layouts.app')
 
-@section('title', 'Trang chủ - Fashion AI')
 
-@section('content')
+<?php $__env->startSection('title', 'Trang chủ - Fashion AI'); ?>
 
-    @if($keyword)
+<?php $__env->startSection('content'); ?>
+
+    <?php if($keyword): ?>
         <div class="container" style="margin-top: 20px;">
-            <h2>Kết quả tìm kiếm cho: "{{ $keyword }}"</h2>
-            <p>Tìm thấy {{ count($products) }} sản phẩm.</p>
+            <h2>Kết quả tìm kiếm cho: "<?php echo e($keyword); ?>"</h2>
+            <p>Tìm thấy <?php echo e(count($products)); ?> sản phẩm.</p>
         </div>
-    @endif
+    <?php endif; ?>
 
-    {{-- 1. Hero Banner --}}
+    
     <section class="hero-banner">
         <div class="container">
             <h1>Khám Phá Phong Cách Mới</h1>
@@ -20,74 +20,75 @@
         </div>
     </section>
 
-    {{-- 2. Danh mục nổi bật --}}
+    
     <section class="container" style="padding: 50px 15px;">
         <h2 class="section-title">Danh Mục Nổi Bật</h2>
-        <div style="display: grid; grid-template-columns: repeat({{ $categories->count() }}, 1fr); gap: 20px; margin-top: 30px;">
-            @foreach($categories as $cat)
-            <a href="{{ route('home', ['cat' => $cat->slug]) }}"
+        <div style="display: grid; grid-template-columns: repeat(<?php echo e($categories->count()); ?>, 1fr); gap: 20px; margin-top: 30px;">
+            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <a href="<?php echo e(route('home', ['cat' => $cat->slug])); ?>"
                style="display: block; text-decoration: none; color: #333;">
                 <div style="background: #f5f5f5; border-radius: 12px; overflow: hidden; transition: all 0.3s; position: relative;">
-                    @if($cat->banner_url)
+                    <?php if($cat->banner_url): ?>
                         <div style="position: relative; height: 200px; overflow: hidden;">
-                            <img src="{{ asset('storage/' . $cat->banner_url) }}" alt="{{ $cat->name }}"
+                            <img src="<?php echo e(asset('storage/' . $cat->banner_url)); ?>" alt="<?php echo e($cat->name); ?>"
                                  style="width: 100%; height: 100%; object-fit: cover;">
                             <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 20px 15px 15px;">
-                                <h3 style="font-size: 18px; color: #fff; margin-bottom: 3px;">{{ $cat->name }}</h3>
-                                <p style="font-size: 13px; color: rgba(255,255,255,0.8);">{{ $cat->products_count }} sản phẩm</p>
+                                <h3 style="font-size: 18px; color: #fff; margin-bottom: 3px;"><?php echo e($cat->name); ?></h3>
+                                <p style="font-size: 13px; color: rgba(255,255,255,0.8);"><?php echo e($cat->products_count); ?> sản phẩm</p>
                             </div>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div style="padding: 30px 20px; text-align: center;">
                             <div style="font-size: 48px; margin-bottom: 10px;">
-                                <i class="fa-solid {{ $cat->slug === 'nam' ? 'fa-person' : ($cat->slug === 'nu' ? 'fa-person-dress' : 'fa-child') }}" style="color: #d4a574;"></i>
+                                <i class="fa-solid <?php echo e($cat->slug === 'nam' ? 'fa-person' : ($cat->slug === 'nu' ? 'fa-person-dress' : 'fa-child')); ?>" style="color: #d4a574;"></i>
                             </div>
-                            <h3 style="font-size: 18px; margin-bottom: 5px;">{{ $cat->name }}</h3>
-                            <p style="font-size: 13px; color: #999;">{{ $cat->products_count }} sản phẩm</p>
+                            <h3 style="font-size: 18px; margin-bottom: 5px;"><?php echo e($cat->name); ?></h3>
+                            <p style="font-size: 13px; color: #999;"><?php echo e($cat->products_count); ?> sản phẩm</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </section>
 
-    {{-- 3. Sản phẩm nổi bật --}}
+    
     <section class="product-section container" id="products" style="padding-bottom: 20px;">
         <h2 class="section-title">
-            {{ $category_slug ? 'Danh mục: ' . ($products->first()->category->name ?? 'Đang cập nhật') : 'Sản Phẩm Nổi Bật' }}
+            <?php echo e($category_slug ? 'Danh mục: ' . ($products->first()->category->name ?? 'Đang cập nhật') : 'Sản Phẩm Nổi Bật'); ?>
+
         </h2>
 
         <div class="product-grid">
-            @forelse($products as $item)
+            <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                 <div class="product-card">
-                    <span class="product-tag">{{ $item->tag }}</span>
-                    <a href="{{ route('product.show', $item->id) }}">
-                        <img src="{{ product_image($item->thumbnail_url) }}" alt="{{ $item->name }}">
+                    <span class="product-tag"><?php echo e($item->tag); ?></span>
+                    <a href="<?php echo e(route('product.show', $item->id)); ?>">
+                        <img src="<?php echo e(product_image($item->thumbnail_url)); ?>" alt="<?php echo e($item->name); ?>">
                     </a>
                     <button class="btn-ai-tryon"><i class="fa-solid fa-wand-magic-sparkles"></i> Thử đồ AI</button>
                     <div class="product-info">
                         <h3 class="product-name">
-                            <a href="{{ route('product.show', $item->id) }}">{{ $item->name }}</a>
+                            <a href="<?php echo e(route('product.show', $item->id)); ?>"><?php echo e($item->name); ?></a>
                         </h3>
-                        <p class="product-price">{{ number_format($item->price, 0, ',', '.') }}đ</p>
+                        <p class="product-price"><?php echo e(number_format($item->price, 0, ',', '.')); ?>đ</p>
                     </div>
                 </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <p style="text-align: center; grid-column: 1/-1;">Rất tiếc, không tìm thấy sản phẩm nào.</p>
-            @endforelse
+            <?php endif; ?>
         </div>
     </section>
 
-    @if(!$keyword && !$category_slug)
+    <?php if(!$keyword && !$category_slug): ?>
 
-    {{-- 4. Banner quảng cáo giữa trang --}}
+    
     <section style="padding: 20px 0;">
         <div class="container">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 320px;">
-                {{-- Banner trái --}}
-                <a href="{{ route('home', ['cat' => 'nu']) }}" style="display: block; position: relative; border-radius: 12px; overflow: hidden; height: 100%;">
-                    <img src="{{ asset('images/banners/promo-banner.jpg') }}" alt="Bộ sưu tập"
+                
+                <a href="<?php echo e(route('home', ['cat' => 'nu'])); ?>" style="display: block; position: relative; border-radius: 12px; overflow: hidden; height: 100%;">
+                    <img src="<?php echo e(asset('images/banners/promo-banner.jpg')); ?>" alt="Bộ sưu tập"
                          style="width: 100%; height: 100%; object-fit: cover;">
                     <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);"></div>
                     <div style="position: absolute; bottom: 30px; left: 30px; z-index: 1;">
@@ -99,9 +100,9 @@
                     </div>
                 </a>
 
-                {{-- Banner phải --}}
+                
                 <div style="display: grid; grid-template-rows: 1fr 1fr; gap: 20px; height: 100%;">
-                    <a href="{{ route('home', ['cat' => 'nam']) }}" style="display: block; position: relative; border-radius: 12px; overflow: hidden;">
+                    <a href="<?php echo e(route('home', ['cat' => 'nam'])); ?>" style="display: block; position: relative; border-radius: 12px; overflow: hidden;">
                         <div style="height: 100%; background: linear-gradient(135deg, #d4a574 0%, #b8875a 100%); display: flex; align-items: center; padding: 25px 30px; position: relative;">
                             <div style="position: relative; z-index: 1;">
                                 <p style="color: rgba(255,255,255,0.7); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Ưu đãi đặc biệt</p>
@@ -132,77 +133,77 @@
         </div>
     </section>
 
-    {{-- 5. Sản phẩm mới nhất --}}
+    
     <section class="product-section container" style="padding: 30px 15px;">
         <h2 class="section-title">Sản Phẩm Mới Nhất</h2>
         <div class="product-grid">
-            @foreach($newProducts as $item)
+            <?php $__currentLoopData = $newProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="product-card">
-                    <span class="product-tag">{{ $item->tag }}</span>
-                    <a href="{{ route('product.show', $item->id) }}">
-                        <img src="{{ product_image($item->thumbnail_url) }}" alt="{{ $item->name }}">
+                    <span class="product-tag"><?php echo e($item->tag); ?></span>
+                    <a href="<?php echo e(route('product.show', $item->id)); ?>">
+                        <img src="<?php echo e(product_image($item->thumbnail_url)); ?>" alt="<?php echo e($item->name); ?>">
                     </a>
                     <button class="btn-ai-tryon"><i class="fa-solid fa-wand-magic-sparkles"></i> Thử đồ AI</button>
                     <div class="product-info">
                         <h3 class="product-name">
-                            <a href="{{ route('product.show', $item->id) }}">{{ $item->name }}</a>
+                            <a href="<?php echo e(route('product.show', $item->id)); ?>"><?php echo e($item->name); ?></a>
                         </h3>
-                        <p class="product-price">{{ number_format($item->price, 0, ',', '.') }}đ</p>
+                        <p class="product-price"><?php echo e(number_format($item->price, 0, ',', '.')); ?>đ</p>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </section>
 
-    {{-- 6. Sản phẩm Sale --}}
-    @if($saleProducts->count() > 0)
+    
+    <?php if($saleProducts->count() > 0): ?>
     <section class="product-section container" style="padding: 30px 15px;">
         <h2 class="section-title"><i class="fa-solid fa-percent" style="color: #dc3545;"></i> Đang Giảm Giá</h2>
         <div class="product-grid">
-            @foreach($saleProducts as $item)
+            <?php $__currentLoopData = $saleProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="product-card">
-                    <span class="product-tag" style="background: #dc3545;">{{ $item->tag }}</span>
-                    <a href="{{ route('product.show', $item->id) }}">
-                        <img src="{{ product_image($item->thumbnail_url) }}" alt="{{ $item->name }}">
+                    <span class="product-tag" style="background: #dc3545;"><?php echo e($item->tag); ?></span>
+                    <a href="<?php echo e(route('product.show', $item->id)); ?>">
+                        <img src="<?php echo e(product_image($item->thumbnail_url)); ?>" alt="<?php echo e($item->name); ?>">
                     </a>
                     <button class="btn-ai-tryon"><i class="fa-solid fa-wand-magic-sparkles"></i> Thử đồ AI</button>
                     <div class="product-info">
                         <h3 class="product-name">
-                            <a href="{{ route('product.show', $item->id) }}">{{ $item->name }}</a>
+                            <a href="<?php echo e(route('product.show', $item->id)); ?>"><?php echo e($item->name); ?></a>
                         </h3>
-                        <p class="product-price">{{ number_format($item->price, 0, ',', '.') }}đ</p>
+                        <p class="product-price"><?php echo e(number_format($item->price, 0, ',', '.')); ?>đ</p>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </section>
-    @endif
+    <?php endif; ?>
 
-    {{-- 7. Sản phẩm bán chạy --}}
-    @if($hotProducts->count() > 0)
+    
+    <?php if($hotProducts->count() > 0): ?>
     <section class="product-section container" style="padding: 30px 15px;">
         <h2 class="section-title"><i class="fa-solid fa-fire" style="color: #e74c3c;"></i> Sản Phẩm Bán Chạy</h2>
         <div class="product-grid">
-            @foreach($hotProducts as $item)
+            <?php $__currentLoopData = $hotProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="product-card">
-                    <span class="product-tag">{{ $item->tag }}</span>
-                    <a href="{{ route('product.show', $item->id) }}">
-                        <img src="{{ product_image($item->thumbnail_url) }}" alt="{{ $item->name }}">
+                    <span class="product-tag"><?php echo e($item->tag); ?></span>
+                    <a href="<?php echo e(route('product.show', $item->id)); ?>">
+                        <img src="<?php echo e(product_image($item->thumbnail_url)); ?>" alt="<?php echo e($item->name); ?>">
                     </a>
                     <button class="btn-ai-tryon"><i class="fa-solid fa-wand-magic-sparkles"></i> Thử đồ AI</button>
                     <div class="product-info">
                         <h3 class="product-name">
-                            <a href="{{ route('product.show', $item->id) }}">{{ $item->name }}</a>
+                            <a href="<?php echo e(route('product.show', $item->id)); ?>"><?php echo e($item->name); ?></a>
                         </h3>
-                        <p class="product-price">{{ number_format($item->price, 0, ',', '.') }}đ</p>
+                        <p class="product-price"><?php echo e(number_format($item->price, 0, ',', '.')); ?>đ</p>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </section>
-    @endif
+    <?php endif; ?>
 
-    {{-- 8. Cam kết (gần footer) --}}
+    
     <section style="border-top: 1px solid #eee; padding: 45px 15px; margin-top: 20px;">
         <div class="container">
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;">
@@ -246,6 +247,7 @@
         </div>
     </section>
 
-    @endif
+    <?php endif; ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/home/index.blade.php ENDPATH**/ ?>

@@ -1,67 +1,75 @@
-@extends('admin.layouts.app')
 
-@section('title', 'Sửa sản phẩm')
-@section('page-title', 'Sửa sản phẩm')
 
-@section('content')
+<?php $__env->startSection('title', 'Sửa sản phẩm'); ?>
+<?php $__env->startSection('page-title', 'Sửa sản phẩm'); ?>
+
+<?php $__env->startSection('content'); ?>
 
 <div class="card">
     <div class="card-header">
-        <h5><i class="fa-solid fa-pen-to-square" style="color: #f57c00;"></i> Sửa sản phẩm: {{ $product->name }}</h5>
-        <a href="{{ route('admin.products.index') }}" class="btn btn-sm" style="background: #eee; color: #333;">
+        <h5><i class="fa-solid fa-pen-to-square" style="color: #f57c00;"></i> Sửa sản phẩm: <?php echo e($product->name); ?></h5>
+        <a href="<?php echo e(route('admin.products.index')); ?>" class="btn btn-sm" style="background: #eee; color: #333;">
             <i class="fa-solid fa-arrow-left"></i> Quay lại
         </a>
     </div>
     <div class="card-body">
 
-        {{-- Form cập nhật sản phẩm --}}
-        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+        
+        <form action="<?php echo e(route('admin.products.update', $product->id)); ?>" method="POST" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
                     <label>Tên sản phẩm</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}" required>
-                    @error('name')<span style="color:red;font-size:12px;">{{ $message }}</span>@enderror
+                    <input type="text" name="name" class="form-control" value="<?php echo e(old('name', $product->name)); ?>" required>
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><span style="color:red;font-size:12px;"><?php echo e($message); ?></span><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label>Danh mục</label>
                     <select name="category_id" class="form-control" required>
                         <option value="">-- Chọn danh mục --</option>
-                        @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
-                            {{ $cat->name }}
+                        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($cat->id); ?>" <?php echo e(old('category_id', $product->category_id) == $cat->id ? 'selected' : ''); ?>>
+                            <?php echo e($cat->name); ?>
+
                         </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Giá (đồng)</label>
-                    <input type="number" name="price" class="form-control" value="{{ old('price', $product->price) }}" required min="0">
+                    <input type="number" name="price" class="form-control" value="<?php echo e(old('price', $product->price)); ?>" required min="0">
                 </div>
 
                 <div class="form-group">
                     <label>Tag</label>
                     <select name="tag" class="form-control">
-                        <option value="Mới" {{ old('tag', $product->tag) == 'Mới' ? 'selected' : '' }}>Mới</option>
-                        <option value="Nổi bật" {{ old('tag', $product->tag) == 'Nổi bật' ? 'selected' : '' }}>Nổi bật</option>
-                        <option value="Bán chạy" {{ old('tag', $product->tag) == 'Bán chạy' ? 'selected' : '' }}>Bán chạy</option>
-                        <option value="Sale" {{ old('tag', $product->tag) == 'Sale' ? 'selected' : '' }}>Sale</option>
+                        <option value="Mới" <?php echo e(old('tag', $product->tag) == 'Mới' ? 'selected' : ''); ?>>Mới</option>
+                        <option value="Nổi bật" <?php echo e(old('tag', $product->tag) == 'Nổi bật' ? 'selected' : ''); ?>>Nổi bật</option>
+                        <option value="Bán chạy" <?php echo e(old('tag', $product->tag) == 'Bán chạy' ? 'selected' : ''); ?>>Bán chạy</option>
+                        <option value="Sale" <?php echo e(old('tag', $product->tag) == 'Sale' ? 'selected' : ''); ?>>Sale</option>
                     </select>
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
                     <label><i class="fa-regular fa-image" style="color: #1976d2;"></i> Ảnh thumbnail (ảnh chính)</label>
-                    @if($product->thumbnail_url)
+                    <?php if($product->thumbnail_url): ?>
                     <div style="margin-bottom: 10px;">
-                        <img src="{{ product_image($product->thumbnail_url) }}"
+                        <img src="<?php echo e(product_image($product->thumbnail_url)); ?>"
                             style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
                         <p style="font-size: 12px; color: #666; margin-top: 5px;">Ảnh hiện tại</p>
                     </div>
-                    @endif
+                    <?php endif; ?>
                     <input type="file" name="thumbnail" class="form-control" accept="image/*">
                     <p style="font-size: 12px; color: #999; margin-top: 5px;">Để trống nếu không muốn đổi ảnh</p>
                 </div>
@@ -74,7 +82,7 @@
 
                 <div class="form-group" style="grid-column: 1 / -1;">
                     <label>Mô tả sản phẩm</label>
-                    <textarea name="description" class="form-control" rows="4">{{ old('description', $product->description) }}</textarea>
+                    <textarea name="description" class="form-control" rows="4"><?php echo e(old('description', $product->description)); ?></textarea>
                 </div>
             </div>
 
@@ -82,39 +90,39 @@
                 <button type="submit" class="btn btn-success">
                     <i class="fa-solid fa-floppy-disk"></i> Cập nhật
                 </button>
-                <a href="{{ route('admin.products.index') }}" class="btn" style="background: #eee; color: #333; margin-left: 10px;">Hủy</a>
+                <a href="<?php echo e(route('admin.products.index')); ?>" class="btn" style="background: #eee; color: #333; margin-left: 10px;">Hủy</a>
             </div>
         </form>
 
-        {{-- Ảnh chi tiết hiện có (TÁCH RA NGOÀI form cập nhật) --}}
-        @if($product->images->count() > 0)
+        
+        <?php if($product->images->count() > 0): ?>
         <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
-            <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-images" style="color: #7b1fa2;"></i> Ảnh chi tiết hiện có ({{ $product->images->count() }} ảnh)</h4>
+            <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-images" style="color: #7b1fa2;"></i> Ảnh chi tiết hiện có (<?php echo e($product->images->count()); ?> ảnh)</h4>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                @foreach($product->images as $img)
+                <?php $__currentLoopData = $product->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div style="position: relative; width: 100px; height: 100px;">
-                    <img src="{{ asset('storage/' . $img->image_url) }}"
+                    <img src="<?php echo e(asset('storage/' . $img->image_url)); ?>"
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 1px solid #eee;">
-                    <form action="{{ route('admin.product-images.destroy', $img->id) }}" method="POST"
+                    <form action="<?php echo e(route('admin.product-images.destroy', $img->id)); ?>" method="POST"
                           onsubmit="return confirm('Xóa ảnh này?')"
                           style="position: absolute; top: -6px; right: -6px;">
-                        @csrf
-                        @method('DELETE')
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
                         <button type="submit" style="width: 22px; height: 22px; border-radius: 50%; background: #dc3545; color: #fff; border: 2px solid #fff; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </form>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
-        @endif
+        <?php endif; ?>
 
-        {{-- Quản lý biến thể --}}
+        
         <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
             <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-layer-group" style="color: #1976d2;"></i> Biến thể sản phẩm (Size & Màu)</h4>
 
-            @if($product->variants->count() > 0)
+            <?php if($product->variants->count() > 0): ?>
             <table style="width:100%; margin-bottom: 20px;">
                 <thead>
                     <tr>
@@ -125,38 +133,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($product->variants as $variant)
+                    <?php $__currentLoopData = $product->variants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $variant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ $variant->size }}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ $variant->color }}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><?php echo e($variant->size); ?></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><?php echo e($variant->color); ?></td>
                         <td style="padding: 8px; border-bottom: 1px solid #eee;">
-                            @if($variant->stock_quantity == 0)
+                            <?php if($variant->stock_quantity == 0): ?>
                                 <span style="color: #dc3545; font-weight: 500;">Hết hàng</span>
-                            @elseif($variant->stock_quantity <= 5)
-                                <span style="color: #f57c00; font-weight: 500;">{{ $variant->stock_quantity }}</span>
-                            @else
-                                <span style="color: #28a745;">{{ $variant->stock_quantity }}</span>
-                            @endif
+                            <?php elseif($variant->stock_quantity <= 5): ?>
+                                <span style="color: #f57c00; font-weight: 500;"><?php echo e($variant->stock_quantity); ?></span>
+                            <?php else: ?>
+                                <span style="color: #28a745;"><?php echo e($variant->stock_quantity); ?></span>
+                            <?php endif; ?>
                         </td>
                         <td style="padding: 8px; border-bottom: 1px solid #eee;">
-                            <form action="{{ route('admin.variants.destroy', $variant->id) }}" method="POST"
+                            <form action="<?php echo e(route('admin.variants.destroy', $variant->id)); ?>" method="POST"
                                 onsubmit="return confirm('Xóa biến thể này?')">
-                                @csrf
-                                @method('DELETE')
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
                                 <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                             </form>
                         </td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
-            @else
+            <?php else: ?>
             <p style="color: #999; margin-bottom: 15px;">Chưa có biến thể nào.</p>
-            @endif
+            <?php endif; ?>
 
             <h5 style="margin-bottom: 10px;"><i class="fa-solid fa-plus" style="color: #28a745;"></i> Thêm biến thể mới</h5>
-            <form action="{{ route('admin.variants.store', $product->id) }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('admin.variants.store', $product->id)); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <label>Size</label>
@@ -178,4 +186,5 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/admin/products/edit.blade.php ENDPATH**/ ?>
