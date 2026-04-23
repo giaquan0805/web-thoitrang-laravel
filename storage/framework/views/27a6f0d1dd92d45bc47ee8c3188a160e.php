@@ -1,36 +1,36 @@
-@extends('layouts.app')
 
-@section('title', 'Tài khoản - Fashion AI')
 
-@section('content')
+<?php $__env->startSection('title', 'Tài khoản - Fashion AI'); ?>
+
+<?php $__env->startSection('content'); ?>
 
 <div class="container account-wrapper">
     <div class="account-grid">
 
-        {{-- Sidebar --}}
+        
         <div class="account-sidebar">
             <div class="account-avatar">
                 <div class="account-avatar-circle" style="background: #f59e0b;">
-                    <span>{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                    <span><?php echo e(strtoupper(substr(Auth::user()->name, 0, 1))); ?></span>
                 </div>
-                <p>{{ Auth::user()->name }}</p>
-                <small>{{ Auth::user()->email }}</small>
+                <p><?php echo e(Auth::user()->name); ?></p>
+                <small><?php echo e(Auth::user()->email); ?></small>
             </div>
 
             <ul class="account-menu">
                 <li>
-                    <a href="{{ route('account.profile') }}" class="active">
+                    <a href="<?php echo e(route('account.profile')); ?>" class="active">
                         <i class="fa-regular fa-user"></i> Thông tin tài khoản
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('account.orders') }}">
+                    <a href="<?php echo e(route('account.orders')); ?>">
                         <i class="fa-solid fa-bag-shopping"></i> Lịch sử đơn hàng
                     </a>
                 </li>
                 <li>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
+                    <form action="<?php echo e(route('logout')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="btn-logout">
                             <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                         </button>
@@ -39,35 +39,43 @@
             </ul>
         </div>
 
-        {{-- Nội dung chính --}}
+        
         <div class="account-content">
             <h3><i class="fa-regular fa-user" style="color: #f59e0b;"></i> Thông tin tài khoản</h3>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-                </div>
-            @endif
+                    <i class="fa-solid fa-circle-check"></i> <?php echo e(session('success')); ?>
 
-            <form action="{{ route('account.update') }}" method="POST">
-                @csrf
+                </div>
+            <?php endif; ?>
+
+            <form action="<?php echo e(route('account.update')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
 
                 <div class="account-form-group">
                     <label>Họ tên</label>
                     <div style="position: relative;">
                         <i class="fa-regular fa-user" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #bbb;"></i>
-                        <input type="text" name="name" value="{{ Auth::user()->name }}" required style="padding-left: 38px;">
+                        <input type="text" name="name" value="<?php echo e(Auth::user()->name); ?>" required style="padding-left: 38px;">
                     </div>
-                    @error('name')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="error-text"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="account-form-group">
                     <label>Email</label>
                     <div style="position: relative;">
                         <i class="fa-regular fa-envelope" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #bbb;"></i>
-                        <input type="email" value="{{ Auth::user()->email }}" disabled style="padding-left: 38px;">
+                        <input type="email" value="<?php echo e(Auth::user()->email); ?>" disabled style="padding-left: 38px;">
                     </div>
                 </div>
 
@@ -96,9 +104,9 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .account-wrapper { padding: 40px 15px 60px; }
 
@@ -199,4 +207,5 @@
         .account-sidebar { position: static; }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/account/profile.blade.php ENDPATH**/ ?>

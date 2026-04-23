@@ -1,71 +1,71 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', $product->name . ' - Fashion AI'); ?>
 
-@section('title', $product->name . ' - Fashion AI')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="product-detail">
 
-    {{-- Cột trái: Ảnh sản phẩm --}}
+    
     <div class="product-images">
         <div class="main-image">
             <img id="main-img"
-                 src="{{ product_image($product->thumbnail_url) }}"
-                 alt="{{ $product->name }}">
+                 src="<?php echo e(product_image($product->thumbnail_url)); ?>"
+                 alt="<?php echo e($product->name); ?>">
         </div>
 
         <div class="thumbnail-list">
-            @if($product->thumbnail_url)
-                <img src="{{ product_image($product->thumbnail_url) }}"
-                     alt="{{ $product->name }}"
+            <?php if($product->thumbnail_url): ?>
+                <img src="<?php echo e(product_image($product->thumbnail_url)); ?>"
+                     alt="<?php echo e($product->name); ?>"
                      class="thumb-active"
-                     onclick="changeMainImage(this, '{{ product_image($product->thumbnail_url) }}')">
-            @endif
+                     onclick="changeMainImage(this, '<?php echo e(product_image($product->thumbnail_url)); ?>')">
+            <?php endif; ?>
 
-            @foreach($product->images as $img)
-                <img src="{{ product_image($img->image_url) }}"
-                     alt="{{ $product->name }}"
-                     onclick="changeMainImage(this, '{{ product_image($img->image_url) }}')">
-            @endforeach
+            <?php $__currentLoopData = $product->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <img src="<?php echo e(product_image($img->image_url)); ?>"
+                     alt="<?php echo e($product->name); ?>"
+                     onclick="changeMainImage(this, '<?php echo e(product_image($img->image_url)); ?>')">
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 
-    {{-- Cột phải: Thông tin sản phẩm --}}
+    
     <div class="product-info-detail">
-        <span class="product-tag">{{ $product->tag }}</span>
-        <h1>{{ $product->name }}</h1>
-        <p class="detail-price">{{ number_format($product->price, 0, ',', '.') }}đ</p>
-        <p class="detail-desc">{{ $product->description }}</p>
+        <span class="product-tag"><?php echo e($product->tag); ?></span>
+        <h1><?php echo e($product->name); ?></h1>
+        <p class="detail-price"><?php echo e(number_format($product->price, 0, ',', '.')); ?>đ</p>
+        <p class="detail-desc"><?php echo e($product->description); ?></p>
 
-        {{-- Chọn Màu sắc --}}
+        
         <div class="variant-section">
             <label>Màu sắc: <span id="selected-color-text" style="font-weight: 400; color: #666;"></span></label>
             <div class="color-options">
-                @foreach($product->variants->unique('color') as $index => $variant)
-                    <button class="color-btn {{ $index === 0 ? 'active' : '' }}"
-                            onclick="selectColor(this, '{{ $variant->color }}')"
-                            data-color="{{ $variant->color }}">
-                        {{ $variant->color }}
+                <?php $__currentLoopData = $product->variants->unique('color'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $variant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <button class="color-btn <?php echo e($index === 0 ? 'active' : ''); ?>"
+                            onclick="selectColor(this, '<?php echo e($variant->color); ?>')"
+                            data-color="<?php echo e($variant->color); ?>">
+                        <?php echo e($variant->color); ?>
+
                     </button>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
 
-        {{-- Chọn Size --}}
+        
         <div class="variant-section">
             <label>Chọn Size: <span id="stock-info" style="font-weight: 400; font-size: 13px; color: #999;"></span></label>
             <div class="size-options" id="size-options">
-                @foreach($product->variants->unique('size') as $variant)
+                <?php $__currentLoopData = $product->variants->unique('size'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $variant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <button class="size-btn"
-                            onclick="selectSize(this, '{{ $variant->size }}')"
-                            data-size="{{ $variant->size }}">
-                        {{ $variant->size }}
+                            onclick="selectSize(this, '<?php echo e($variant->size); ?>')"
+                            data-size="<?php echo e($variant->size); ?>">
+                        <?php echo e($variant->size); ?>
+
                     </button>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
 
-        {{-- Số lượng --}}
+        
         <div class="qty-section">
             <label>Số lượng:</label>
             <div class="qty-control">
@@ -75,13 +75,13 @@
             </div>
         </div>
 
-        {{-- Nút hành động --}}
+        
         <div class="product-actions">
             <button class="btn-ai-tryon"><i class="fa-solid fa-wand-magic-sparkles"></i> Thử đồ AI</button>
-            <form action="{{ route('cart.add') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('cart.add')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="product_variant_id" id="selected_variant"
-                       value="{{ $product->variants->first()->id ?? '' }}">
+                       value="<?php echo e($product->variants->first()->id ?? ''); ?>">
                 <input type="hidden" name="quantity" id="selected_qty" value="1">
                 <button type="submit" class="btn-add-cart" id="btn-add-cart">
                     <i class="fa-solid fa-bag-shopping"></i> Thêm vào giỏ
@@ -92,14 +92,14 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 // Dữ liệu tất cả variants từ database
-const variants = @json($product->variants);
+const variants = <?php echo json_encode($product->variants, 15, 512) ?>;
 
-let selectedColor = '{{ $product->variants->first()->color ?? '' }}';
+let selectedColor = '<?php echo e($product->variants->first()->color ?? ''); ?>';
 let selectedSize = '';
 let qty = 1;
 
@@ -188,9 +188,9 @@ function changeMainImage(thumb, imageUrl) {
 // Khởi tạo: cập nhật size availability
 updateSizeAvailability();
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .thumbnail-list img {
     border: 2px solid transparent;
@@ -244,4 +244,5 @@ updateSizeAvailability();
     cursor: not-allowed;
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/product/show.blade.php ENDPATH**/ ?>

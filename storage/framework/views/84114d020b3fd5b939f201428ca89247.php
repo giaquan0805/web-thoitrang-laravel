@@ -155,7 +155,7 @@
             <a href="<?php echo e(route('home')); ?>" target="_blank">
                 <i class="fa-solid fa-globe"></i> Xem website
             </a>
-            <form action="<?php echo e(route('logout')); ?>" method="POST">
+            <form action="<?php echo e(route('admin.logout')); ?>" method="POST">
                 <?php echo csrf_field(); ?>
                 <button type="submit" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:12px 20px; color:#ccc; font-size:14px;">
                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất

@@ -11,14 +11,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Hiện trang đăng nhập
     public function showLogin()
     {
         if (Auth::check()) return redirect()->route('home');
         return view('auth.login');
     }
 
-    // Xử lý đăng nhập
     public function login(Request $request)
     {
         $request->validate([
@@ -28,23 +26,24 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
+
+            // Nếu là admin, chuyển hướng đến trang admin
             if (Auth::user()->role === 1) {
                 return redirect()->route('admin.dashboard');
             }
+
             return redirect()->intended(route('home'));
         }
 
         return back()->with('error', 'Email hoặc mật khẩu không đúng!');
     }
 
-    // Hiện trang đăng ký
     public function showRegister()
     {
         if (Auth::check()) return redirect()->route('home');
         return view('auth.register');
     }
 
-    // Xử lý đăng ký
     public function register(Request $request)
     {
         $request->validate([
@@ -69,7 +68,6 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
     }
 
-    // Đăng xuất
     public function logout(Request $request)
     {
         Auth::logout();
@@ -78,13 +76,11 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-    // Hiện trang profile
     public function profile()
     {
         return view('account.profile');
     }
 
-    // Cập nhật thông tin
     public function update(Request $request)
     {
         $request->validate([
@@ -108,7 +104,6 @@ class AuthController extends Controller
         return back()->with('success', 'Cập nhật thông tin thành công!');
     }
 
-    // Lịch sử đơn hàng
     public function orders()
     {
         $orders = Order::with(['details.variant.product'])

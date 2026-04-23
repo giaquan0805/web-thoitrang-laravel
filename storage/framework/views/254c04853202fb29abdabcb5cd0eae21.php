@@ -1,36 +1,36 @@
-@extends('layouts.app')
 
-@section('title', 'Lịch sử đơn hàng - Fashion AI')
 
-@section('content')
+<?php $__env->startSection('title', 'Lịch sử đơn hàng - Fashion AI'); ?>
+
+<?php $__env->startSection('content'); ?>
 
 <div class="container account-wrapper">
     <div class="account-grid">
 
-        {{-- Sidebar --}}
+        
         <div class="account-sidebar">
             <div class="account-avatar">
                 <div class="account-avatar-circle" style="background: #f59e0b;">
-                    <span>{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                    <span><?php echo e(strtoupper(substr(Auth::user()->name, 0, 1))); ?></span>
                 </div>
-                <p>{{ Auth::user()->name }}</p>
-                <small>{{ Auth::user()->email }}</small>
+                <p><?php echo e(Auth::user()->name); ?></p>
+                <small><?php echo e(Auth::user()->email); ?></small>
             </div>
 
             <ul class="account-menu">
                 <li>
-                    <a href="{{ route('account.profile') }}">
+                    <a href="<?php echo e(route('account.profile')); ?>">
                         <i class="fa-regular fa-user"></i> Thông tin tài khoản
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('account.orders') }}" class="active">
+                    <a href="<?php echo e(route('account.orders')); ?>" class="active">
                         <i class="fa-solid fa-bag-shopping"></i> Lịch sử đơn hàng
                     </a>
                 </li>
                 <li>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
+                    <form action="<?php echo e(route('logout')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="btn-logout">
                             <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                         </button>
@@ -39,26 +39,26 @@
             </ul>
         </div>
 
-        {{-- Danh sách đơn hàng --}}
+        
         <div class="account-content">
             <h3><i class="fa-solid fa-bag-shopping" style="color: #f59e0b;"></i> Lịch sử đơn hàng</h3>
 
-            @if($orders->isEmpty())
+            <?php if($orders->isEmpty()): ?>
                 <div style="text-align: center; padding: 50px 0;">
                     <div style="width: 70px; height: 70px; margin: 0 auto 15px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
                         <i class="fa-solid fa-bag-shopping" style="font-size: 26px; color: #ccc;"></i>
                     </div>
                     <p style="color: #666; margin-bottom: 6px;">Bạn chưa có đơn hàng nào</p>
                     <p style="color: #999; font-size: 13px; margin-bottom: 20px;">Hãy khám phá các sản phẩm thời trang!</p>
-                    <a href="{{ route('home') }}" style="display: inline-block; padding: 10px 24px; background: #f59e0b; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                    <a href="<?php echo e(route('home')); ?>" style="display: inline-block; padding: 10px 24px; background: #f59e0b; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px;">
                         Mua sắm ngay
                     </a>
                 </div>
-            @else
-                <div style="font-size: 13px; color: #999; margin-bottom: 15px;">{{ $orders->count() }} đơn hàng</div>
+            <?php else: ?>
+                <div style="font-size: 13px; color: #999; margin-bottom: 15px;"><?php echo e($orders->count()); ?> đơn hàng</div>
 
-                @foreach($orders as $order)
-                @php
+                <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $statusConfig = [
                         0 => ['label' => 'Chờ xác nhận', 'icon' => 'fa-clock', 'bg' => '#fff3cd', 'color' => '#856404'],
                         1 => ['label' => 'Đang giao', 'icon' => 'fa-truck', 'bg' => '#cce5ff', 'color' => '#004085'],
@@ -66,70 +66,73 @@
                         3 => ['label' => 'Đã hủy', 'icon' => 'fa-circle-xmark', 'bg' => '#f8d7da', 'color' => '#721c24'],
                     ];
                     $status = $statusConfig[$order->status];
-                @endphp
+                ?>
                 <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; margin-bottom: 16px; overflow: hidden;">
 
-                    {{-- Header đơn hàng --}}
+                    
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f5f5f5; background: #fafafa;">
                         <div>
-                            <span style="font-weight: 600; font-size: 15px; color: #333;">Đơn hàng #{{ $order->id }}</span>
+                            <span style="font-weight: 600; font-size: 15px; color: #333;">Đơn hàng #<?php echo e($order->id); ?></span>
                             <span style="color: #999; font-size: 13px; margin-left: 10px;">
                                 <i class="fa-regular fa-clock" style="font-size: 11px;"></i>
-                                {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}
+                                <?php echo e(\Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i')); ?>
+
                             </span>
                         </div>
                         <span style="padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
-                            background: {{ $status['bg'] }}; color: {{ $status['color'] }}; display: flex; align-items: center; gap: 5px;">
-                            <i class="fa-solid {{ $status['icon'] }}" style="font-size: 11px;"></i>
-                            {{ $status['label'] }}
+                            background: <?php echo e($status['bg']); ?>; color: <?php echo e($status['color']); ?>; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid <?php echo e($status['icon']); ?>" style="font-size: 11px;"></i>
+                            <?php echo e($status['label']); ?>
+
                         </span>
                     </div>
 
-                    {{-- Sản phẩm trong đơn --}}
+                    
                     <div style="padding: 12px 20px;">
-                        @foreach($order->details as $detail)
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; {{ !$loop->last ? 'border-bottom: 1px solid #f5f5f5;' : '' }}">
+                        <?php $__currentLoopData = $order->details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; <?php echo e(!$loop->last ? 'border-bottom: 1px solid #f5f5f5;' : ''); ?>">
                             <div style="display: flex; gap: 12px; align-items: center;">
-                                <img src="{{ product_image($detail->variant->product->thumbnail_url) }}"
+                                <img src="<?php echo e(product_image($detail->variant->product->thumbnail_url)); ?>"
                                      style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #eee;">
                                 <div>
-                                    <p style="font-size: 14px; font-weight: 500; margin-bottom: 3px;">{{ $detail->variant->product->name }}</p>
+                                    <p style="font-size: 14px; font-weight: 500; margin-bottom: 3px;"><?php echo e($detail->variant->product->name); ?></p>
                                     <span style="background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #666;">
-                                        {{ $detail->variant->size }} / {{ $detail->variant->color }}
+                                        <?php echo e($detail->variant->size); ?> / <?php echo e($detail->variant->color); ?>
+
                                     </span>
-                                    <span style="color: #999; font-size: 12px; margin-left: 6px;">x{{ $detail->quantity }}</span>
+                                    <span style="color: #999; font-size: 12px; margin-left: 6px;">x<?php echo e($detail->quantity); ?></span>
                                 </div>
                             </div>
-                            <span style="font-weight: 500; font-size: 14px;">{{ number_format($detail->price * $detail->quantity, 0, ',', '.') }}đ</span>
+                            <span style="font-weight: 500; font-size: 14px;"><?php echo e(number_format($detail->price * $detail->quantity, 0, ',', '.')); ?>đ</span>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
-                    {{-- Footer đơn hàng --}}
+                    
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-top: 1px solid #f0f0f0; background: #fafafa;">
                         <span style="font-size: 13px; color: #666; display: flex; align-items: center; gap: 6px;">
-                            @if($order->payment_method === 'COD')
+                            <?php if($order->payment_method === 'COD'): ?>
                                 <i class="fa-solid fa-money-bill-wave" style="color: #28a745;"></i> Thanh toán khi nhận hàng
-                            @else
+                            <?php else: ?>
                                 <i class="fa-solid fa-building-columns" style="color: #f59e0b;"></i> Chuyển khoản
-                            @endif
+                            <?php endif; ?>
                         </span>
                         <span style="font-weight: 700; font-size: 16px; color: #f59e0b;">
-                            Tổng: {{ number_format($order->total_price, 0, ',', '.') }}đ
+                            Tổng: <?php echo e(number_format($order->total_price, 0, ',', '.')); ?>đ
                         </span>
                     </div>
 
                 </div>
-                @endforeach
-            @endif
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php endif; ?>
         </div>
 
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .account-wrapper { padding: 40px 15px 60px; }
 
@@ -193,4 +196,5 @@
         .account-sidebar { position: static; }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/account/orders.blade.php ENDPATH**/ ?>

@@ -196,6 +196,25 @@ class ProductController extends Controller
         return redirect()->route('admin.products.edit', $id)->with('success', 'Thêm biến thể thành công!');
     }
 
+    public function updateVariant(Request $request, $id)
+    {
+        $this->checkAdmin();
+        $request->validate([
+            'size'           => 'required|string|max:10',
+            'color'          => 'required|string|max:50',
+            'stock_quantity' => 'required|integer|min:0',
+        ]);
+
+        $variant = \App\Models\ProductVariant::findOrFail($id);
+        $variant->update([
+            'size'           => $request->size,
+            'color'          => $request->color,
+            'stock_quantity' => $request->stock_quantity,
+        ]);
+
+        return redirect()->route('admin.products.edit', $variant->product_id)->with('success', 'Cập nhật biến thể thành công!');
+    }
+
     public function destroyVariant($id)
     {
         $this->checkAdmin();

@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Giỏ hàng - Fashion AI')
 
-@section('content')
+<?php $__env->startSection('title', 'Giỏ hàng - Fashion AI'); ?>
+
+<?php $__env->startSection('content'); ?>
 
 <div class="container cart-wrapper">
 
-    {{-- Breadcrumb steps --}}
+    
     <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 35px; font-size: 14px;">
         <span style="color: #f59e0b; font-weight: 600;">
             <i class="fa-solid fa-bag-shopping"></i> Giỏ hàng
@@ -21,78 +21,82 @@
         </span>
     </div>
 
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-        </div>
-    @endif
+            <i class="fa-solid fa-circle-check"></i> <?php echo e(session('success')); ?>
 
-    @if(session('error'))
+        </div>
+    <?php endif; ?>
+
+    <?php if(session('error')): ?>
         <div style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
-        </div>
-    @endif
+            <i class="fa-solid fa-circle-exclamation"></i> <?php echo e(session('error')); ?>
 
-    @if($cartItems->isEmpty())
+        </div>
+    <?php endif; ?>
+
+    <?php if($cartItems->isEmpty()): ?>
         <div style="text-align: center; padding: 80px 0;">
             <div style="width: 80px; height: 80px; margin: 0 auto 20px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid fa-bag-shopping" style="font-size: 30px; color: #ccc;"></i>
             </div>
             <p style="font-size: 18px; color: #666; margin-bottom: 8px;">Giỏ hàng của bạn đang trống</p>
             <p style="font-size: 14px; color: #999; margin-bottom: 25px;">Hãy khám phá các sản phẩm thời trang mới nhất!</p>
-            <a href="{{ route('home') }}" style="display: inline-block; padding: 12px 30px; background: #f59e0b; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 500; transition: 0.3s;">
+            <a href="<?php echo e(route('home')); ?>" style="display: inline-block; padding: 12px 30px; background: #f59e0b; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 500; transition: 0.3s;">
                 <i class="fa-solid fa-arrow-left" style="font-size: 12px;"></i> Tiếp tục mua sắm
             </a>
         </div>
-    @else
+    <?php else: ?>
         <div class="cart-grid">
 
-            {{-- Danh sách sản phẩm --}}
+            
             <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="font-size: 16px; color: #333;">
                         <i class="fa-solid fa-bag-shopping" style="color: #f59e0b;"></i>
-                        {{ $cartItems->count() }} sản phẩm trong giỏ
+                        <?php echo e($cartItems->count()); ?> sản phẩm trong giỏ
                     </h3>
                 </div>
 
-                @foreach($cartItems as $item)
+                <?php $__currentLoopData = $cartItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="cart-item">
 
-                    <a href="{{ route('product.show', $item->variant->product->id) }}">
-                        <img src="{{ product_image($item->variant->product->thumbnail_url) }}"
-                             alt="{{ $item->variant->product->name }}">
+                    <a href="<?php echo e(route('product.show', $item->variant->product->id)); ?>">
+                        <img src="<?php echo e(product_image($item->variant->product->thumbnail_url)); ?>"
+                             alt="<?php echo e($item->variant->product->name); ?>">
                     </a>
 
                     <div class="cart-item-info">
                         <h3>
-                            <a href="{{ route('product.show', $item->variant->product->id) }}" style="color: #333; text-decoration: none;">
-                                {{ $item->variant->product->name }}
+                            <a href="<?php echo e(route('product.show', $item->variant->product->id)); ?>" style="color: #333; text-decoration: none;">
+                                <?php echo e($item->variant->product->name); ?>
+
                             </a>
                         </h3>
                         <p style="margin-top: 4px;">
                             <span style="background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 12px;">
-                                {{ $item->variant->size }} / {{ $item->variant->color }}
+                                <?php echo e($item->variant->size); ?> / <?php echo e($item->variant->color); ?>
+
                             </span>
                         </p>
-                        <p class="cart-item-price" style="color: #f59e0b;">{{ number_format($item->variant->product->price, 0, ',', '.') }}đ</p>
+                        <p class="cart-item-price" style="color: #f59e0b;"><?php echo e(number_format($item->variant->product->price, 0, ',', '.')); ?>đ</p>
                     </div>
 
                     <div class="cart-qty">
-                        <form action="{{ route('cart.update') }}" method="POST" style="display: flex; align-items: center; gap: 0;">
-                            @csrf
-                            <input type="hidden" name="cart_id" value="{{ $item->id }}">
+                        <form action="<?php echo e(route('cart.update')); ?>" method="POST" style="display: flex; align-items: center; gap: 0;">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="cart_id" value="<?php echo e($item->id); ?>">
                             <button type="submit" name="action" value="decrease" style="border-radius: 6px 0 0 6px;">-</button>
-                            <span>{{ $item->quantity }}</span>
+                            <span><?php echo e($item->quantity); ?></span>
                             <button type="submit" name="action" value="increase" style="border-radius: 0 6px 6px 0;">+</button>
                         </form>
                     </div>
 
                     <div class="cart-item-total">
-                        <p style="font-size: 16px;">{{ number_format($item->variant->product->price * $item->quantity, 0, ',', '.') }}đ</p>
-                        <form action="{{ route('cart.remove') }}" method="POST" style="margin-top: 8px;">
-                            @csrf
-                            <input type="hidden" name="cart_id" value="{{ $item->id }}">
+                        <p style="font-size: 16px;"><?php echo e(number_format($item->variant->product->price * $item->quantity, 0, ',', '.')); ?>đ</p>
+                        <form action="<?php echo e(route('cart.remove')); ?>" method="POST" style="margin-top: 8px;">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="cart_id" value="<?php echo e($item->id); ?>">
                             <button type="submit" class="btn-remove" onclick="return confirm('Xóa sản phẩm này khỏi giỏ hàng?')">
                                 <i class="fa-regular fa-trash-can"></i> Xóa
                             </button>
@@ -100,10 +104,10 @@
                     </div>
 
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
-            {{-- Tổng tiền --}}
+            
             <div>
                 <div class="cart-summary">
                     <h3 style="font-size: 16px; margin-bottom: 20px;">
@@ -111,8 +115,8 @@
                     </h3>
 
                     <div class="cart-summary-row">
-                        <span style="color: #666;">Tạm tính ({{ $cartItems->sum('quantity') }} sản phẩm):</span>
-                        <span>{{ number_format($total, 0, ',', '.') }}đ</span>
+                        <span style="color: #666;">Tạm tính (<?php echo e($cartItems->sum('quantity')); ?> sản phẩm):</span>
+                        <span><?php echo e(number_format($total, 0, ',', '.')); ?>đ</span>
                     </div>
 
                     <div class="cart-summary-row">
@@ -123,19 +127,19 @@
                     <div style="border-top: 2px solid #f59e0b; margin: 15px 0; padding-top: 15px;">
                         <div class="cart-summary-row total">
                             <span>Tổng cộng:</span>
-                            <span style="color: #f59e0b;">{{ number_format($total, 0, ',', '.') }}đ</span>
+                            <span style="color: #f59e0b;"><?php echo e(number_format($total, 0, ',', '.')); ?>đ</span>
                         </div>
                     </div>
 
-                    <a href="{{ route('checkout.index') }}" class="btn-checkout">
+                    <a href="<?php echo e(route('checkout.index')); ?>" class="btn-checkout">
                         <i class="fa-solid fa-lock" style="font-size: 13px;"></i> Tiến hành đặt hàng
                     </a>
 
-                    <a href="{{ route('home') }}" class="btn-continue">
+                    <a href="<?php echo e(route('home')); ?>" class="btn-continue">
                         <i class="fa-solid fa-arrow-left" style="font-size: 12px;"></i> Tiếp tục mua sắm
                     </a>
 
-                    {{-- Badge an toàn --}}
+                    
                     <div style="margin-top: 15px; display: flex; align-items: center; gap: 6px; justify-content: center; color: #999; font-size: 12px;">
                         <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
                     </div>
@@ -143,12 +147,12 @@
             </div>
 
         </div>
-    @endif
+    <?php endif; ?>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .cart-wrapper { padding: 30px 15px 50px; }
 
@@ -269,4 +273,5 @@
         .cart-item { flex-wrap: wrap; }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/cart/index.blade.php ENDPATH**/ ?>

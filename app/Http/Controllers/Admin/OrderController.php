@@ -65,7 +65,33 @@ class OrderController extends Controller
             'status' => 'required|in:0,1,2,3',
         ]);
 
-        Order::findOrFail($id)->update(['status' => $request->status]);
+        $order = Order::with('details')->findOrFail($id);
+        $oldStatus = $order->status;
+        $newStatus = (int) $request->status;
+
+        // Trừ tồn kho khi chuyển sang "Hoàn thành" (status = 2)
+        if ($newStatus == 2 && $oldStatus != 2) {
+            foreach ($order->details as $detail) {
+                $variant = $detail->variant;
+                if ($variant) {
+                    $variant->stock_quantity = max(0, $variant->stock_quantity - $detail->quantity);
+                    $variant->save();
+                }
+            }
+        }
+
+        // Cộng lại tồn kho nếu từ "Hoàn thành" chuyển sang trạng thái khác (hoàn tác)
+        if ($oldStatus == 2 && $newStatus != 2) {
+            foreach ($order->details as $detail) {
+                $variant = $detail->variant;
+                if ($variant) {
+                    $variant->stock_quantity += $detail->quantity;
+                    $variant->save();
+                }
+            }
+        }
+
+        $order->update(['status' => $newStatus]);
         return redirect()->route('admin.orders.show', $id)->with('success', 'Cập nhật trạng thái đơn hàng thành công!');
     }
 }

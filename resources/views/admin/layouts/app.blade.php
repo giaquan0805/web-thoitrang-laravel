@@ -155,7 +155,7 @@
             <a href="{{ route('home') }}" target="_blank">
                 <i class="fa-solid fa-globe"></i> Xem website
             </a>
-            <form action="{{ route('logout') }}" method="POST">
+            <form action="{{ route('admin.logout') }}" method="POST">
                 @csrf
                 <button type="submit" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:12px 20px; color:#ccc; font-size:14px;">
                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất

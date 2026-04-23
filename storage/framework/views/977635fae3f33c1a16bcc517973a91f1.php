@@ -1,14 +1,14 @@
-@extends('layouts.app')
 
-@section('title', 'Đặt hàng - Fashion AI')
 
-@section('content')
+<?php $__env->startSection('title', 'Đặt hàng - Fashion AI'); ?>
+
+<?php $__env->startSection('content'); ?>
 
 <div class="container checkout-wrapper">
 
-    {{-- Breadcrumb steps --}}
+    
     <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 35px; font-size: 14px;">
-        <a href="{{ route('cart.index') }}" style="color: #999; text-decoration: none;">
+        <a href="<?php echo e(route('cart.index')); ?>" style="color: #999; text-decoration: none;">
             <i class="fa-solid fa-bag-shopping"></i> Giỏ hàng
         </a>
         <i class="fa-solid fa-chevron-right" style="font-size: 10px; color: #ccc;"></i>
@@ -21,31 +21,39 @@
         </span>
     </div>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
         <div style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+            <i class="fa-solid fa-circle-exclamation"></i> <?php echo e(session('error')); ?>
+
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="checkout-grid">
 
-        {{-- Form thông tin giao hàng --}}
+        
         <div class="checkout-form">
             <h3><i class="fa-solid fa-truck" style="color: #f59e0b;"></i> Thông tin giao hàng</h3>
 
-            <form action="{{ route('checkout.store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('checkout.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
 
                 <div class="checkout-form-group">
                     <label>Họ tên người nhận</label>
                     <div style="position: relative;">
                         <i class="fa-regular fa-user" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #bbb;"></i>
-                        <input type="text" name="shipping_name" value="{{ Auth::user()->name }}" required
+                        <input type="text" name="shipping_name" value="<?php echo e(Auth::user()->name); ?>" required
                                style="padding-left: 38px;">
                     </div>
-                    @error('shipping_name')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['shipping_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="error-text"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="checkout-form-group">
@@ -55,9 +63,16 @@
                         <input type="text" name="shipping_phone" placeholder="0xxx xxx xxx" required
                                style="padding-left: 38px;">
                     </div>
-                    @error('shipping_phone')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['shipping_phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="error-text"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="checkout-form-group">
@@ -67,9 +82,16 @@
                         <textarea name="shipping_address" required rows="3" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"
                                   style="padding-left: 38px;"></textarea>
                     </div>
-                    @error('shipping_address')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['shipping_address'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="error-text"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="payment-options">
@@ -108,37 +130,39 @@
             </form>
         </div>
 
-        {{-- Tóm tắt đơn hàng --}}
+        
         <div>
             <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-receipt" style="color: #f59e0b;"></i> Đơn hàng của bạn</h3>
             <div class="order-summary">
 
-                <div style="font-size: 13px; color: #999; margin-bottom: 12px;">{{ $cartItems->count() }} sản phẩm</div>
+                <div style="font-size: 13px; color: #999; margin-bottom: 12px;"><?php echo e($cartItems->count()); ?> sản phẩm</div>
 
-                @foreach($cartItems as $item)
+                <?php $__currentLoopData = $cartItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="order-item">
                     <div class="order-item-left">
                         <div style="position: relative;">
-                            <img src="{{ product_image($item->variant->product->thumbnail_url) }}">
+                            <img src="<?php echo e(product_image($item->variant->product->thumbnail_url)); ?>">
                             <span style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #f59e0b; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 600;">
-                                {{ $item->quantity }}
+                                <?php echo e($item->quantity); ?>
+
                             </span>
                         </div>
                         <div>
-                            <p>{{ $item->variant->product->name }}</p>
+                            <p><?php echo e($item->variant->product->name); ?></p>
                             <span style="background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 11px;">
-                                {{ $item->variant->size }} / {{ $item->variant->color }}
+                                <?php echo e($item->variant->size); ?> / <?php echo e($item->variant->color); ?>
+
                             </span>
                         </div>
                     </div>
-                    <span style="font-weight: 500; white-space: nowrap;">{{ number_format($item->variant->product->price * $item->quantity, 0, ',', '.') }}đ</span>
+                    <span style="font-weight: 500; white-space: nowrap;"><?php echo e(number_format($item->variant->product->price * $item->quantity, 0, ',', '.')); ?>đ</span>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 <div style="border-top: 1px solid #eee; margin-top: 15px; padding-top: 15px;">
                     <div class="order-total-row">
                         <span style="color: #666;">Tạm tính:</span>
-                        <span>{{ number_format($total, 0, ',', '.') }}đ</span>
+                        <span><?php echo e(number_format($total, 0, ',', '.')); ?>đ</span>
                     </div>
                     <div class="order-total-row">
                         <span style="color: #666;">Phí vận chuyển:</span>
@@ -149,12 +173,12 @@
                 <div style="border-top: 2px solid #f59e0b; margin-top: 12px; padding-top: 12px;">
                     <div class="order-total-row final">
                         <span>Tổng cộng:</span>
-                        <span style="color: #f59e0b;">{{ number_format($total, 0, ',', '.') }}đ</span>
+                        <span style="color: #f59e0b;"><?php echo e(number_format($total, 0, ',', '.')); ?>đ</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Badge an toàn --}}
+            
             <div style="margin-top: 15px; display: flex; align-items: center; gap: 8px; justify-content: center; color: #999; font-size: 12px;">
                 <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
             </div>
@@ -163,9 +187,9 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .checkout-wrapper { padding: 30px 15px 50px; }
 
@@ -290,4 +314,5 @@
         }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/checkout/index.blade.php ENDPATH**/ ?>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 
 // Trang chủ
 Route::get('/', [ProductController::class, 'index'])->name('home');
@@ -28,20 +29,26 @@ Route::post('/cart/update', [CartController::class, 'update'])->name('cart.updat
 Route::get('/checkout', [OrderController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
 
-// Auth
+// Auth khách hàng
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Account
+// Account khách hàng
 Route::middleware('auth')->group(function () {
     Route::get('/account', [AuthController::class, 'profile'])->name('account.profile');
     Route::post('/account/update', [AuthController::class, 'update'])->name('account.update');
     Route::get('/account/orders', [AuthController::class, 'orders'])->name('account.orders');
 });
 
+// Admin Auth (riêng biệt)
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+// Admin Panel
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
@@ -55,7 +62,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Variants
     Route::post('/products/{id}/variants', [AdminProductController::class, 'storeVariant'])->name('variants.store');
+    Route::put('/variants/{id}', [AdminProductController::class, 'updateVariant'])->name('variants.update');
     Route::delete('/variants/{id}', [AdminProductController::class, 'destroyVariant'])->name('variants.destroy');
+
+    // Product Images
     Route::delete('/product-images/{id}', [AdminProductController::class, 'destroyImage'])->name('product-images.destroy');
 
     // Orders
