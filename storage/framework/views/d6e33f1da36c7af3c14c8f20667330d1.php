@@ -20,7 +20,7 @@
         /* Ảnh nền mờ */
         .auth-backdrop {
             position: fixed; inset: 0; z-index: 0;
-            background: url('{{ asset("images/banners/hero-banner.jpg") }}') center/cover no-repeat;
+            background: url('<?php echo e(asset("images/banners/hero-banner.jpg")); ?>') center/cover no-repeat;
             filter: blur(6px) brightness(0.5);
             transform: scale(1.1);
         }
@@ -37,7 +37,7 @@
         /* Nửa trái - Ảnh */
         .auth-card-image {
             flex: 1; position: relative;
-            background: url('{{ asset("images/banners/hero-banner.jpg") }}') center/cover no-repeat;
+            background: url('<?php echo e(asset("images/banners/hero-banner.jpg")); ?>') center/cover no-repeat;
             min-height: 100%;
         }
 
@@ -199,7 +199,7 @@
 
 <div class="auth-card">
 
-    {{-- Nửa trái - Ảnh --}}
+    
     <div class="auth-card-image">
         <div class="image-brand">FASHION AI</div>
         <div class="image-text">
@@ -208,10 +208,10 @@
         </div>
     </div>
 
-    {{-- Nửa phải - Form --}}
+    
     <div class="auth-card-form" style="position: relative;">
 
-        <a href="{{ route('home') }}" class="btn-back">
+        <a href="<?php echo e(route('home')); ?>" class="btn-back">
             <i class="fa-solid fa-xmark"></i>
         </a>
 
@@ -222,29 +222,38 @@
             <p><span>latest trends now.</span></p>
         </div>
 
-        @if(session('error'))
+        <?php if(session('error')): ?>
             <div class="auth-alert error">
-                <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
-            </div>
-        @endif
+                <i class="fa-solid fa-circle-exclamation"></i> <?php echo e(session('error')); ?>
 
-        @if(session('success'))
+            </div>
+        <?php endif; ?>
+
+        <?php if(session('success')): ?>
             <div class="auth-alert success">
-                <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-            </div>
-        @endif
+                <i class="fa-solid fa-circle-check"></i> <?php echo e(session('success')); ?>
 
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
+            </div>
+        <?php endif; ?>
+
+        <form action="<?php echo e(route('login')); ?>" method="POST">
+            <?php echo csrf_field(); ?>
 
             <div class="form-field">
                 <div class="input-wrap">
                     <i class="fa-regular fa-user"></i>
-                    <input type="email" name="email" value="{{ old('email') }}" placeholder="Email" required>
+                    <input type="email" name="email" value="<?php echo e(old('email')); ?>" placeholder="Email" required>
                 </div>
-                @error('email')
-                    <span class="error-text">{{ $message }}</span>
-                @enderror
+                <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <span class="error-text"><?php echo e($message); ?></span>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="form-field">
@@ -252,16 +261,23 @@
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
-                @error('password')
-                    <span class="error-text">{{ $message }}</span>
-                @enderror
+                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <span class="error-text"><?php echo e($message); ?></span>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="form-options">
                 <label>
                     <input type="checkbox" name="remember"> Ghi nhớ
                 </label>
-                <a href="{{ route('password.forgot') }}">Quên mật khẩu?</a>
+                <a href="<?php echo e(route('password.forgot')); ?>">Quên mật khẩu?</a>
             </div>
 
             <button type="submit" class="form-submit">Sign in</button>
@@ -270,11 +286,11 @@
         <div class="form-divider">or</div>
 
         <p class="form-switch">
-            Chưa có tài khoản? <a href="{{ route('register') }}">Đăng ký ngay</a>
+            Chưa có tài khoản? <a href="<?php echo e(route('register')); ?>">Đăng ký ngay</a>
         </p>
     </div>
 
 </div>
 
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\web-thoitrang\resources\views/auth/login.blade.php ENDPATH**/ ?>

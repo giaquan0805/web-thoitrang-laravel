@@ -73,6 +73,30 @@ if (Auth::check()) {
                     </div>
                 </li>
 
+                <li class="has-mega">
+                    <a href="{{ route('home', ['cat' => 'tre-em']) }}">Trẻ em <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></a>
+                    <div class="mega-content">
+                        <ul class="sub-column">
+                            <li class="column-title">ÁO TRẺ EM</li>
+                            <li><a href="#">Áo thun/phông</a></li>
+                            <li><a href="#">Áo sơ mi</a></li>
+                            <li><a href="#">Áo Chống nắng</a></li>
+                        </ul>
+                        <ul class="sub-column">
+                            <li class="column-title">ĐỒ BỘ</li>
+                            <li><a href="#">Đồ mặc nhà</a></li>
+                            <li><a href="#">Đồ ngủ</a></li>
+                            <li><a href="#">Đồ thể thao</a></li>
+                        </ul>
+                        <ul class="sub-column">
+                            <li class="column-title">QUẦN TRẺ EM</li>
+                            <li><a href="#">Quần shorts</a></li>
+                            <li><a href="#">Quần dài & jeans</a></li>
+                            <li><a href="#">Tất/Vớ</a></li>
+                        </ul>
+                    </div>
+                </li>
+
                 <li><a href="#" class="menu-sale">Sale</a></li>
                 <li><a href="#">Bộ sưu tập</a></li>
             </ul>

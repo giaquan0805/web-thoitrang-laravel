@@ -13,7 +13,6 @@ class ProductController extends Controller
         $keyword = $request->get('keyword');
         $category_slug = $request->get('cat');
 
-        // Nếu đang tìm kiếm hoặc lọc danh mục
         if ($keyword || $category_slug) {
             $query = Product::with('category');
 
@@ -27,21 +26,37 @@ class ProductController extends Controller
                 });
             }
 
-            $products = $query->latest('created_at')->take(12)->get();
+            // Bộ lọc giá
+            $price = $request->get('price');
+            if ($price === 'under200') {
+                $query->where('price', '<', 200000);
+            } elseif ($price === '200to500') {
+                $query->whereBetween('price', [200000, 500000]);
+            } elseif ($price === 'above500') {
+                $query->where('price', '>', 500000);
+            }
+
+            // Sắp xếp
+            $sort = $request->get('sort');
+            if ($sort === 'price_asc') {
+                $query->orderBy('price', 'asc');
+            } elseif ($sort === 'price_desc') {
+                $query->orderBy('price', 'desc');
+            } else {
+                $query->latest('created_at');
+            }
+
+            $products = $query->get();
         } else {
-            // Sản phẩm nổi bật = tag "Nổi bật"
             $products = Product::with('category')->where('tag', 'Nổi bật')->take(8)->get();
 
-            // Nếu chưa có sản phẩm nổi bật, lấy mới nhất
             if ($products->isEmpty()) {
                 $products = Product::with('category')->latest('created_at')->take(8)->get();
             }
         }
 
-        // Sản phẩm mới nhất = tag "Mới"
         $newProducts = Product::with('category')->where('tag', 'Mới')->take(4)->get();
 
-        // Nếu chưa đủ, bổ sung thêm từ sản phẩm mới tạo
         if ($newProducts->count() < 4) {
             $moreNew = Product::with('category')
                 ->whereNotIn('id', $newProducts->pluck('id'))
@@ -51,13 +66,8 @@ class ProductController extends Controller
             $newProducts = $newProducts->merge($moreNew);
         }
 
-        // Sản phẩm bán chạy = tag "Bán chạy"
         $hotProducts = Product::with('category')->where('tag', 'Bán chạy')->take(4)->get();
-
-        // Sản phẩm sale
         $saleProducts = Product::with('category')->where('tag', 'Sale')->take(4)->get();
-
-        // Danh mục
         $categories = Category::withCount('products')->get();
 
         return view('home.index', compact(

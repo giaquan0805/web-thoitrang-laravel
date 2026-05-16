@@ -5,6 +5,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AiTryonController;
+use App\Http\Controllers\PasswordResetController;
+
 // Admin routes
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -36,12 +39,24 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Quên mật khẩu
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.forgot');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendOtp'])->name('password.sendOtp');
+Route::get('/verify-otp', [PasswordResetController::class, 'showOtpForm'])->name('password.showOtpForm');
+Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp'])->name('password.verifyOtp');
+Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.showResetForm');
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.reset');
+
 // Account khách hàng
 Route::middleware('auth')->group(function () {
     Route::get('/account', [AuthController::class, 'profile'])->name('account.profile');
     Route::post('/account/update', [AuthController::class, 'update'])->name('account.update');
     Route::get('/account/orders', [AuthController::class, 'orders'])->name('account.orders');
 });
+
+// AI Try-on
+Route::get('/ai-tryon/{productId}', [AiTryonController::class, 'index'])->name('ai.tryon');
+Route::post('/ai-tryon/process', [AiTryonController::class, 'process'])->name('ai.process');
 
 // Admin Auth (riêng biệt)
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
