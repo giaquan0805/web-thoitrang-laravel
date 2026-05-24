@@ -74,7 +74,15 @@ class AiTryonController extends Controller
                             'content' => [
                                 [
                                     'type' => 'text',
-                                    'text' => 'Take the person in the first image and dress them in the clothing/accessory item shown in the second image. Generate a realistic photo of the person wearing that exact item. Keep the person\'s face, body shape, pose, and background the same. Only change their clothing/accessory to match the item in the second image. Make it look natural and realistic.'
+                                    'text' => 'I have two images. The first image is a photo of a person. The second image shows a clothing product called "' . $product->name . '" (category: ' . ($product->category->name ?? 'clothing') . '). 
+
+IMPORTANT INSTRUCTIONS:
+1. Identify the MAIN CLOTHING ITEM in the second image (ignore any accessories, hats, bags, or background items - focus ONLY on the main garment: ' . $product->name . ').
+2. Generate a NEW realistic photo of the person from the first image wearing ONLY that main clothing item ("' . $product->name . '").
+3. Keep the person\'s face, hair, body shape, and pose EXACTLY the same.
+4. Keep the rest of their outfit unchanged - only replace the relevant clothing piece.
+5. Make it look natural and realistic as if the person is actually wearing this item.
+6. Output ONLY the generated image, no text.'
                                 ],
                                 [
                                     'type' => 'image_url',

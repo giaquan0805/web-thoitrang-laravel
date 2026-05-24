@@ -25,6 +25,11 @@
             <img src="<?php echo e(asset('images/banners/' . $bannerImg)); ?>" alt=""
                  style="width: 100%; display: block;">
         </section>
+    <?php elseif(request('tag')): ?>
+        <section style="width: 100%; overflow: hidden;">
+            <img src="<?php echo e(asset('images/banners/banner_sale.jpg')); ?>" alt="Sale"
+                 style="width: 100%; display: block;">
+        </section>
     <?php else: ?>
         <section class="hero-banner">
             <div class="container">
@@ -36,7 +41,7 @@
     <?php endif; ?>
 
     
-    <?php if(!$category_slug && !$keyword): ?>
+    <?php if(!$category_slug && !$keyword && !request('tag')): ?>
     <section class="container" style="padding: 50px 15px;">
         <h2 class="section-title">Danh Mục Nổi Bật</h2>
         <div style="display: grid; grid-template-columns: repeat(<?php echo e($categories->count()); ?>, 1fr); gap: 20px; margin-top: 30px;">
@@ -211,6 +216,143 @@
 
         </div>
     </section>
+    <?php elseif(request('tag')): ?>
+    
+    <section id="products" style="padding: 30px 40px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-size: 24px; font-weight: 700;">
+                <?php if(request('tag') === 'Sale'): ?>
+                    <i class="fa-solid fa-percent" style="color: #dc3545;"></i> Sản Phẩm Đang Giảm Giá
+                <?php elseif(request('tag') === 'Mới'): ?>
+                    <i class="fa-solid fa-sparkles" style="color: #f59e0b;"></i> Sản Phẩm Mới
+                <?php elseif(request('tag') === 'Bán chạy'): ?>
+                    <i class="fa-solid fa-fire" style="color: #e74c3c;"></i> Sản Phẩm Bán Chạy
+                <?php else: ?>
+                    <?php echo e(request('tag')); ?>
+
+                <?php endif; ?>
+            </h2>
+            <span style="color: #999; font-size: 14px;"><?php echo e(count($products)); ?> sản phẩm</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 25px;">
+
+            
+            <div style="position: sticky; top: 80px; align-self: start;">
+                <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 20px;">
+                    <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-filter" style="font-size: 14px; color: #f59e0b;"></i> Bộ lọc
+                    </h3>
+
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 15px; font-weight: 600; color: #333; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0;">Danh mục</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'cat' => $cat->slug])); ?>"
+                                   style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; transition: 0.2s;">
+                                    <i class="fa-solid fa-chevron-right" style="font-size: 10px; color: #ccc;"></i>
+                                    <?php echo e($cat->name); ?>
+
+                                </a>
+                            </li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </ul>
+                    </div>
+
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 15px; font-weight: 600; color: #333; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0;">Khoảng giá</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'price' => 'under200'])); ?>"
+                                   style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; <?php echo e(request('price') === 'under200' ? 'background: #fffbeb; color: #d97706; font-weight: 600;' : ''); ?>">
+                                    <span style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid <?php echo e(request('price') === 'under200' ? '#f59e0b' : '#ccc'); ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <?php if(request('price') === 'under200'): ?><span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span><?php endif; ?>
+                                    </span>
+                                    Dưới 200.000đ
+                                </a>
+                            </li>
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'price' => '200to500'])); ?>"
+                                   style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; <?php echo e(request('price') === '200to500' ? 'background: #fffbeb; color: #d97706; font-weight: 600;' : ''); ?>">
+                                    <span style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid <?php echo e(request('price') === '200to500' ? '#f59e0b' : '#ccc'); ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <?php if(request('price') === '200to500'): ?><span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span><?php endif; ?>
+                                    </span>
+                                    200.000đ - 500.000đ
+                                </a>
+                            </li>
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'price' => 'above500'])); ?>"
+                                   style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; <?php echo e(request('price') === 'above500' ? 'background: #fffbeb; color: #d97706; font-weight: 600;' : ''); ?>">
+                                    <span style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid <?php echo e(request('price') === 'above500' ? '#f59e0b' : '#ccc'); ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <?php if(request('price') === 'above500'): ?><span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span><?php endif; ?>
+                                    </span>
+                                    Trên 500.000đ
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    
+                    <div style="margin-bottom: 10px;">
+                        <h4 style="font-size: 15px; font-weight: 600; color: #333; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0;">Sắp xếp</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'sort' => 'price_asc'])); ?>"
+                                   style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; <?php echo e(request('sort') === 'price_asc' ? 'background: #fffbeb; color: #d97706; font-weight: 600;' : ''); ?>">
+                                    <i class="fa-solid fa-arrow-up-short-wide" style="font-size: 12px; color: #bbb;"></i> Giá thấp → cao
+                                </a>
+                            </li>
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'sort' => 'price_desc'])); ?>"
+                                   style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; <?php echo e(request('sort') === 'price_desc' ? 'background: #fffbeb; color: #d97706; font-weight: 600;' : ''); ?>">
+                                    <i class="fa-solid fa-arrow-down-wide-short" style="font-size: 12px; color: #bbb;"></i> Giá cao → thấp
+                                </a>
+                            </li>
+                            <li style="margin-bottom: 6px;">
+                                <a href="<?php echo e(route('home', ['tag' => request('tag'), 'sort' => 'newest'])); ?>"
+                                   style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: #555; <?php echo e(request('sort') === 'newest' ? 'background: #fffbeb; color: #d97706; font-weight: 600;' : ''); ?>">
+                                    <i class="fa-solid fa-clock" style="font-size: 12px; color: #bbb;"></i> Mới nhất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <?php if(request('price') || request('sort')): ?>
+                    <a href="<?php echo e(route('home', ['tag' => request('tag')])); ?>"
+                       style="display: block; text-align: center; padding: 8px; border: 1px solid #eee; border-radius: 8px; text-decoration: none; font-size: 13px; color: #999; margin-top: 10px;">
+                        <i class="fa-solid fa-xmark" style="font-size: 11px;"></i> Xóa bộ lọc
+                    </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            
+            <div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;">
+                    <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="product-card">
+                            <span class="product-tag" style="<?php echo e(request('tag') === 'Sale' ? 'background: #dc3545;' : ''); ?>"><?php echo e($item->tag); ?></span>
+                            <a href="<?php echo e(route('product.show', $item->id)); ?>">
+                                <img src="<?php echo e(product_image($item->thumbnail_url)); ?>" alt="<?php echo e($item->name); ?>">
+                            </a>
+                            <div class="product-info">
+                                <h3 class="product-name">
+                                    <a href="<?php echo e(route('product.show', $item->id)); ?>"><?php echo e($item->name); ?></a>
+                                </h3>
+                                <p class="product-price"><?php echo e(number_format($item->price, 0, ',', '.')); ?>đ</p>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <p style="text-align: center; grid-column: 1/-1; padding: 40px 0; color: #999;">Không tìm thấy sản phẩm nào.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+        </div>
+    </section>
     <?php else: ?>
     
     <section class="product-section container" id="products" style="padding-bottom: 20px;">
@@ -238,7 +380,7 @@
     </section>
     <?php endif; ?>
 
-    <?php if(!$keyword && !$category_slug): ?>
+    <?php if(!$keyword && !$category_slug && !request('tag')): ?>
 
     
     <section style="padding: 20px 0;">

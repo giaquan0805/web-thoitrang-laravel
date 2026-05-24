@@ -29,7 +29,7 @@
                     <li style="margin-bottom: 10px;"><a href="#" style="color: #999; text-decoration: none; font-size: 14px; transition: 0.2s;">Chính sách đổi trả</a></li>
                     <li style="margin-bottom: 10px;"><a href="#" style="color: #999; text-decoration: none; font-size: 14px; transition: 0.2s;">Hướng dẫn chọn size</a></li>
                     <li style="margin-bottom: 10px;"><a href="#" style="color: #999; text-decoration: none; font-size: 14px; transition: 0.2s;">Theo dõi đơn hàng</a></li>
-                    <li style="margin-bottom: 10px;"><a href="#" style="color: #999; text-decoration: none; font-size: 14px; transition: 0.2s;">Liên hệ</a></li>
+                    <li style="margin-bottom: 10px;"><a href="{{ route('contact.index') }}" style="color: red; text-decoration: none; font-size: 14px; transition: 0.2s;">Liên hệ</a></li>
                 </ul>
             </div>
 

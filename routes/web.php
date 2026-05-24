@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\Admin\CollectionController as AdminCollectionController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\Admin\MessageController as AdminMessageController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
@@ -46,6 +52,7 @@ Route::get('/verify-otp', [PasswordResetController::class, 'showOtpForm'])->name
 Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp'])->name('password.verifyOtp');
 Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.showResetForm');
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.reset');
+Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
 
 // Account khách hàng
 Route::middleware('auth')->group(function () {
@@ -57,6 +64,14 @@ Route::middleware('auth')->group(function () {
 // AI Try-on
 Route::get('/ai-tryon/{productId}', [AiTryonController::class, 'index'])->name('ai.tryon');
 Route::post('/ai-tryon/process', [AiTryonController::class, 'process'])->name('ai.process');
+
+// Liên hệ
+Route::get('/contact', [MessageController::class, 'create'])->name('contact.index');
+Route::post('/contact', [MessageController::class, 'store'])->name('contact.store');
+
+// Bộ sưu tập
+Route::get('/collections', [CollectionController::class, 'index'])->name('collections.index');
+Route::get('/collections/{id}', [CollectionController::class, 'show'])->name('collections.show');
 
 // Admin Auth (riêng biệt)
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
@@ -94,6 +109,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::put('/categories/{id}', [AdminCategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{id}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
 
+    // Collections
+    Route::get('/collections', [AdminCollectionController::class, 'index'])->name('collections.index');
+    Route::get('/collections/create', [AdminCollectionController::class, 'create'])->name('collections.create');
+    Route::post('/collections', [AdminCollectionController::class, 'store'])->name('collections.store');
+    Route::get('/collections/{id}/edit', [AdminCollectionController::class, 'edit'])->name('collections.edit');
+    Route::put('/collections/{id}', [AdminCollectionController::class, 'update'])->name('collections.update');
+    Route::delete('/collections/{id}', [AdminCollectionController::class, 'destroy'])->name('collections.destroy');
+
     // Users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+
+    // Messages
+    Route::get('/messages', [AdminMessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{id}', [AdminMessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{id}/reply', [AdminMessageController::class, 'reply'])->name('messages.reply');
+    Route::delete('/messages/{id}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
+
+    // Reviews
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 });

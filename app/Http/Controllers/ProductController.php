@@ -12,8 +12,9 @@ class ProductController extends Controller
     {
         $keyword = $request->get('keyword');
         $category_slug = $request->get('cat');
+        $tag = $request->get('tag');
 
-        if ($keyword || $category_slug) {
+        if ($keyword || $category_slug || $tag) {
             $query = Product::with('category');
 
             if ($keyword) {
@@ -24,6 +25,10 @@ class ProductController extends Controller
                 $query->whereHas('category', function ($q) use ($category_slug) {
                     $q->where('slug', $category_slug);
                 });
+            }
+
+            if ($tag) {
+                $query->where('tag', $tag);
             }
 
             // Bộ lọc giá
@@ -84,6 +89,12 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['category', 'images', 'variants'])->findOrFail($id);
-        return view('product.show', compact('product'));
+        $reviews = \App\Models\Review::with('user')
+            ->where('product_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $avgRating = $reviews->avg('rating') ?? 0;
+        $reviewCount = $reviews->count();
+        return view('product.show', compact('product', 'reviews', 'avgRating', 'reviewCount'));
     }
 }

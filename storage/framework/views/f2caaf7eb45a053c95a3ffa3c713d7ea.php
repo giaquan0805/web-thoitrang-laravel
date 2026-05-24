@@ -97,8 +97,8 @@ if (Auth::check()) {
                     </div>
                 </li>
 
-                <li><a href="#" class="menu-sale">Sale</a></li>
-                <li><a href="#">Bộ sưu tập</a></li>
+                <li><a href="<?php echo e(route('home', ['tag' => 'Sale'])); ?>" class="menu-sale">Sale</a></li>
+                <li><a href="<?php echo e(route('collections.index')); ?>">Bộ sưu tập</a></li>
             </ul>
         </nav>
 
